@@ -45,6 +45,21 @@ app.delete('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
   const body = req.body
+
+  if (!body.name) {
+    return res.status(400).json({ error: 'name is missing' })
+  }
+  if (!body.number) {
+    return res.status(400).json({ error: 'number is missing' })
+  }
+  if (
+    persons.find(
+      (person) => person.name.toLocaleLowerCase() === body.name.toLowerCase()
+    )
+  ) {
+    return res.status(400).json({ error: 'name must be unique' })
+  }
+
   const id = Math.floor(Math.random() * 1000 + 5)
   const person = { id, ...body }
   persons = persons.concat(person)
